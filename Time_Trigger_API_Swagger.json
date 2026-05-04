@@ -1,0 +1,450 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "UiPath Orchestrator Time Trigger Management API Demo",
+    "description": "Swagger (OpenAPI 3.0) documentation for Time Trigger (ProcessSchedules) management APIs on UiPath Orchestrator.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://cloud.uipath.com",
+      "description": "UiPath Cloud Orchestrator Base URL"
+    }
+  ],
+  "paths": {
+    "/identity_/connect/token": {
+      "post": {
+        "summary": "Retrieve OAuth2 Access Token",
+        "description": "Creates an access token using external application client id and secret.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "default": "client_credentials"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "description": "Client ID of the external application"
+                  },
+                  "client_secret": {
+                    "type": "string",
+                    "description": "Client Secret of the external application"
+                  },
+                  "scope": {
+                    "type": "string",
+                    "default": "OR.Jobs OR.Execution OR.Robots OR.Assets.Read OR.Assets.Write OR.Folders.Read"
+                  }
+                },
+                "required": ["grant_type", "client_id", "client_secret", "scope"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Access Token response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "expires_in": {
+                      "type": "integer"
+                    },
+                    "token_type": {
+                      "type": "string"
+                    },
+                    "scope": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{organizationName}/{tenantName}/orchestrator_/odata/Releases": {
+      "get": {
+        "summary": "Query Process Releases",
+        "parameters": [
+          {
+            "name": "organizationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-UIPATH-OrganizationUnitId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the Targeted Orchestrator Folder"
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "e.g., ProcessKey eq 'ProcessName'"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deployed releases matching filter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ODataReleasesResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/{organizationName}/{tenantName}/orchestrator_/odata/ProcessSchedules": {
+      "get": {
+        "summary": "Query Time Triggers",
+        "parameters": [
+          {
+            "name": "organizationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-UIPATH-OrganizationUnitId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "e.g., Name eq 'TriggerName'"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Time Triggers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ODataTriggersResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Time Trigger",
+        "parameters": [
+          {
+            "name": "organizationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-UIPATH-OrganizationUnitId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created"
+          },
+          "400": {
+            "description": "Invalid input formatting"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/{organizationName}/{tenantName}/orchestrator_/odata/ProcessSchedules({Id})": {
+      "put": {
+        "summary": "Update Existing Time Trigger",
+        "parameters": [
+          {
+            "name": "organizationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Trigger unique ID"
+          },
+          {
+            "name": "X-UIPATH-OrganizationUnitId",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessScheduleUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successfully updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ODataReleasesResponse": {
+        "type": "object",
+        "properties": {
+          "@odata.context": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Key": {
+                  "type": "string"
+                },
+                "ProcessKey": {
+                  "type": "string"
+                },
+                "ProcessVersion": {
+                  "type": "string"
+                },
+                "Name": {
+                  "type": "string"
+                },
+                "Id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ODataTriggersResponse": {
+        "type": "object",
+        "properties": {
+          "@odata.context": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Id": {
+                  "type": "integer"
+                },
+                "Name": {
+                  "type": "string"
+                },
+                "ReleaseId": {
+                  "type": "integer"
+                },
+                "Enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProcessScheduleRequest": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "example": "Trigger_Auto_Login_Daily"
+          },
+          "ReleaseId": {
+            "type": "integer",
+            "example": 1889934
+          },
+          "StartStrategy": {
+            "type": "integer",
+            "description": "1 = Dynamic Allocation",
+            "example": 1
+          },
+          "StartProcessCron": {
+            "type": "string",
+            "example": "0 20 14 ? * *"
+          },
+          "StartProcessCronDetails": {
+            "type": "string",
+            "example": "{}"
+          },
+          "TimeZoneId": {
+            "type": "string",
+            "example": "Korea Standard Time"
+          },
+          "Enabled": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": ["Name", "ReleaseId", "StartStrategy", "StartProcessCron", "StartProcessCronDetails", "TimeZoneId", "Enabled"]
+      },
+      "ProcessScheduleUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "example": 389264
+          },
+          "Name": {
+            "type": "string",
+            "example": "Trigger_Auto_Login_Daily"
+          },
+          "ReleaseId": {
+            "type": "integer",
+            "example": 1889934
+          },
+          "StartStrategy": {
+            "type": "integer",
+            "example": 1
+          },
+          "StartProcessCron": {
+            "type": "string",
+            "example": "0 20 14 ? * *"
+          },
+          "StartProcessCronDetails": {
+            "type": "string",
+            "example": "{}"
+          },
+          "TimeZoneId": {
+            "type": "string",
+            "example": "Korea Standard Time"
+          },
+          "Enabled": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": ["Id", "Name", "ReleaseId", "StartStrategy", "StartProcessCron", "StartProcessCronDetails", "TimeZoneId", "Enabled"]
+      }
+    }
+  }
+}

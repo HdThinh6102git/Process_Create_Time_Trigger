@@ -1,0 +1,6 @@
+{
+  "Name": "Test_Create_Time_Trigger",
+  "ProjectType": "Process",
+  "Description": "Test_Create_Time_Trigger",
+  "MainFile": "Main.xaml"
+}

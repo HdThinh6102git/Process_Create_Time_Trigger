@@ -1,0 +1,258 @@
+{
+  "info": {
+    "name": "UiPath Orchestrator Trigger Creation Demo",
+    "description": "Collection of APIs related to creating and managing Time Triggers via the OData API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Step 0: Retrieve Access Token via OAuth2 Client Credentials",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "grant_type",
+              "value": "client_credentials"
+            },
+            {
+              "key": "client_id",
+              "value": "{{str_ClientId}}"
+            },
+            {
+              "key": "client_secret",
+              "value": "{{str_ClientSecret}}"
+            },
+            {
+              "key": "scope",
+              "value": "OR.Jobs OR.Execution OR.Robots OR.Assets.Read OR.Assets.Write OR.Folders.Read"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://cloud.uipath.com/identity_/connect/token",
+          "protocol": "https",
+          "host": ["cloud", "uipath", "com"],
+          "path": ["identity_", "connect", "token"]
+        }
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"access_token\": \"eyJhbGciOiJSUzI1NiIs...\",\n  \"expires_in\": 3600,\n  \"token_type\": \"Bearer\",\n  \"scope\": \"OR.Jobs OR.Execution OR.Robots OR.Assets.Read OR.Assets.Write OR.Folders.Read\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Step 1: Get Release Information",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "X-UIPATH-OrganizationUnitId",
+            "value": "{{str_FolderId}}"
+          }
+        ],
+        "url": {
+          "raw": "https://cloud.uipath.com/{{str_OrganizationName}}/{{str_TenantName}}/orchestrator_/odata/Releases?$filter=ProcessKey eq 'AutomationProject1' or Name eq 'AutomationProject1'",
+          "protocol": "https",
+          "host": ["cloud", "uipath", "com"],
+          "path": [
+            "{{str_OrganizationName}}",
+            "{{str_TenantName}}",
+            "orchestrator_",
+            "odata",
+            "Releases"
+          ],
+          "query": [
+            {
+              "key": "$filter",
+              "value": "ProcessKey eq 'AutomationProject1' or Name eq 'AutomationProject1'"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"@odata.context\": \"https://cloud.uipath.com/johnoorg/DefaultTenant/orchestrator_/odata/$metadata#Releases\",\n  \"@odata.count\": 1,\n  \"value\": [\n    {\n      \"Key\": \"59b6ac0d-5056-42a7-a19f-4a9ea8293ff4\",\n      \"ProcessKey\": \"AutomationProject1\",\n      \"ProcessVersion\": \"1.0.3\",\n      \"Name\": \"Process_Auto_Login_Daily\",\n      \"Id\": 1889934\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "Step 2: Query Current Time Triggers",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "X-UIPATH-OrganizationUnitId",
+            "value": "{{str_FolderId}}"
+          }
+        ],
+        "url": {
+          "raw": "https://cloud.uipath.com/{{str_OrganizationName}}/{{str_TenantName}}/orchestrator_/odata/ProcessSchedules?$filter=Name eq 'Trigger_Auto_Login_Daily'",
+          "protocol": "https",
+          "host": ["cloud", "uipath", "com"],
+          "path": [
+            "{{str_OrganizationName}}",
+            "{{str_TenantName}}",
+            "orchestrator_",
+            "odata",
+            "ProcessSchedules"
+          ],
+          "query": [
+            {
+              "key": "$filter",
+              "value": "Name eq 'Trigger_Auto_Login_Daily'"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"@odata.context\": \"https://cloud.uipath.com/johnoorg/DefaultTenant/orchestrator_/odata/$metadata#ProcessSchedules\",\n  \"@odata.count\": 1,\n  \"value\": [\n    {\n      \"Id\": 389264,\n      \"Name\": \"Trigger_Auto_Login_Daily\",\n      \"ReleaseId\": 1889934,\n      \"Enabled\": true\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "Step 3: Create Time Trigger",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "X-UIPATH-OrganizationUnitId",
+            "value": "{{str_FolderId}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Name\": \"Trigger_Auto_Login_Daily\",\n  \"ReleaseId\": 1889934,\n  \"StartStrategy\": 1,\n  \"StartProcessCron\": \"0 20 14 ? * *\",\n  \"StartProcessCronDetails\": \"{}\",\n  \"TimeZoneId\": \"Korea Standard Time\",\n  \"Enabled\": true\n}"
+        },
+        "url": {
+          "raw": "https://cloud.uipath.com/{{str_OrganizationName}}/{{str_TenantName}}/orchestrator_/odata/ProcessSchedules",
+          "protocol": "https",
+          "host": ["cloud", "uipath", "com"],
+          "path": [
+            "{{str_OrganizationName}}",
+            "{{str_TenantName}}",
+            "orchestrator_",
+            "odata",
+            "ProcessSchedules"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"@odata.context\": \"https://cloud.uipath.com/johnoorg/DefaultTenant/orchestrator_/odata/$metadata#ProcessSchedules/$entity\",\n  \"Id\": 389264,\n  \"Name\": \"Trigger_Auto_Login_Daily\",\n  \"ReleaseId\": 1889934,\n  \"Enabled\": true,\n  \"StartProcessCron\": \"0 20 14 ? * *\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Step 4: Update Existing Time Trigger",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "X-UIPATH-OrganizationUnitId",
+            "value": "{{str_FolderId}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Id\": 389264,\n  \"Name\": \"Trigger_Auto_Login_Daily\",\n  \"ReleaseId\": 1889934,\n  \"StartStrategy\": 1,\n  \"StartProcessCron\": \"0 20 14 ? * *\",\n  \"StartProcessCronDetails\": \"{}\",\n  \"TimeZoneId\": \"Korea Standard Time\",\n  \"Enabled\": true\n}"
+        },
+        "url": {
+          "raw": "https://cloud.uipath.com/{{str_OrganizationName}}/{{str_TenantName}}/orchestrator_/odata/ProcessSchedules(389264)",
+          "protocol": "https",
+          "host": ["cloud", "uipath", "com"],
+          "path": [
+            "{{str_OrganizationName}}",
+            "{{str_TenantName}}",
+            "orchestrator_",
+            "odata",
+            "ProcessSchedules(389264)"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "status": "No Content",
+          "code": 204,
+          "_postman_previewlanguage": "plain",
+          "header": [],
+          "body": ""
+        }
+      ]
+    }
+  ]
+}

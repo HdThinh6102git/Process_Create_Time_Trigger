@@ -1,0 +1,3 @@
+﻿TriggerName,Status,Message
+"Trigger_Auto_Login_Daily_02","Failed","API Error: {""message"":""The name Trigger_Auto_Login_Daily_02 is already used."",""errorCode"":1001,""traceId"":""00-1d742677a4159fd00e77a9051a5762d0-f2b88c2d035d00f2-00""}"
+"Trigger_Auto_Login_Weekend_02","Failed","API Error: {""message"":""The name Trigger_Auto_Login_Weekend_02 is already used."",""errorCode"":1001,""traceId"":""00-1d742677a4159fd00e77a9051a5762d0-85f8f7ac9dd3bad7-00""}"
