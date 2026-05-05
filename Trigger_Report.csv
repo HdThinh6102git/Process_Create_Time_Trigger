@@ -1,3 +1,9 @@
-﻿TriggerName,Status,Message
-"Trigger_Auto_Login_Daily_02","Failed","API Error: {""message"":""The name Trigger_Auto_Login_Daily_02 is already used."",""errorCode"":1001,""traceId"":""00-1d742677a4159fd00e77a9051a5762d0-f2b88c2d035d00f2-00""}"
-"Trigger_Auto_Login_Weekend_02","Failed","API Error: {""message"":""The name Trigger_Auto_Login_Weekend_02 is already used."",""errorCode"":1001,""traceId"":""00-1d742677a4159fd00e77a9051a5762d0-85f8f7ac9dd3bad7-00""}"
+﻿Trigger Name,Status,Message
+"삼성생명_특정","Success","Cron: 0 30 8 1,2,3 * ?"
+"라이나생명_특정","Success","Cron: 0 30 10 4,5,6 * ?"
+"메트라이프_특정","Success","Cron: 0 30 12 7,8,9 * ?"
+"DB생명_특정","Success","Cron: 0 30 14 10,11,12 * ?"
+"KB라이프_특정","Success","Cron: 0 30 16 13,14,15 * ?"
+"카디프생명_특정","Success","Cron: 0 30 18 16,17,18 * ?"
+"메리츠화재_특정","Success","Cron: 0 30 20 19,20,21 * ?"
+"롯데손보_특정","Success","Cron: 0 30 22 22,23,24 * ?"
